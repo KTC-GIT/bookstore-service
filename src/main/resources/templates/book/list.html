@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TaeCheon Bookstore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 카드 이미지 높이 고정 (들쭉날쭉 방지) */
+        .card-img-top {
+            height: 350px;
+            object-fit: contain; /* 비율 유지하며 꽉 채우기 */
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: bold;
+            /* 제목 길면 ... 처리 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function addToCart(bookId) {
+        alert(bookId + "번 책을 장바구니에 담았습니다! (구현 예정)");
+    }
+</script>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">📚 태천문고 (DevOps Ver.)</a>
+        <div class="d-flex">
+            <a href="#" class="btn btn-outline-light btn-sm">로그인</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+
+        <div class="col" th:each="book : ${books}">
+            <div class="card h-100 shadow-sm">
+
+                <a th:href="@{/books/{id}(id=${book.id})}" class="text-decoration-none">
+                    <img th:src="${book.thumbnailUrl}" class="card-img-top" alt="책 표지">
+                </a>
+
+                <div class="card-body d-flex flex-column">
+                    <a th:href="@{/books/{id}(id=${book.id})}" class="text-decoration-none text-dark">
+                        <h5 class="card-title" th:text="${book.title}">책 제목</h5>
+                    </a>
+
+                    <p class="card-text text-muted small mb-2">
+                        <span th:text="${book.author}">저자</span> | <span th:text="${book.publisher}">출판사</span>
+                    </p>
+
+                    <div class="mt-auto">
+                        <h6 class="text-primary fw-bold mb-3">
+                            <span th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')}">15,000</span>원
+                        </h6>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-sm"
+                                    th:onclick="|addToCart([[${book.id}]])|">
+                                <i class="bi bi-cart-plus"></i> 장바구니
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
