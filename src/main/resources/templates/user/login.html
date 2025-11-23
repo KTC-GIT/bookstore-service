@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>로그인</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center py-5" style="height: 100vh;">
+
+<main class="form-signin w-100 m-auto" style="max-width: 330px; padding: 15px;">
+    <form action="/login" method="post">
+        <h1 class="h3 mb-3 fw-normal text-center">🔒 로그인</h1>
+
+        <div class="form-floating mb-2">
+            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+            <label for="email">이메일 주소</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            <label for="password">비밀번호</label>
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-danger text-center">
+            아이디 또는 비밀번호를 확인해주세요.
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">로그인</button>
+        <a href="/static" class="w-100 btn btn-lg btn-outline-secondary mt-2">홈으로</a>
+        <a href="/join" class="w-100 btn btn-lg btn-outline-secondary mt-2">회원가입</a>
+    </form>
+</main>
+
+</body>
+</html>

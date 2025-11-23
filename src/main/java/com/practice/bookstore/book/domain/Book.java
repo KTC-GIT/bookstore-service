@@ -53,4 +53,12 @@ public class Book extends BaseTimeEntity {
         this.publishedAt = publishedAt;
         this.itemId = itemId;
     }
+
+    public void reduceStockQuantity(long quantity){
+        long restStock = this.stockQuantity - quantity;
+        if(restStock < 0){
+            throw new IllegalArgumentException("재고가 부족합니다. : (현재 재고 : "+this.stockQuantity+")");
+        }
+        this.stockQuantity = restStock;
+    }
 }

@@ -23,10 +23,30 @@
     </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    function addToCart(bookId) {
-        alert(bookId + "번 책을 장바구니에 담았습니다! (구현 예정)");
-    }
+function addToCart(bookId) {
+    let count = 1;
+    // const count = document.getElementById('quantity').value;
+    $.ajax({
+        url: "/carts/items",
+        type: "POST",
+        contentType : "application/json; charset=utf-8",
+        data: JSON.stringify({
+            "bookId": Number(bookId),
+            "quantity": Number(count)
+        }),
+        success: function (data) {
+            alert(data);
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText);
+        },
+        complete: function () {
+
+        }
+    });
+}
 </script>
 <body class="bg-light">
 
@@ -34,7 +54,9 @@
     <div class="container">
         <a class="navbar-brand" href="/">📚 태천문고 (DevOps Ver.)</a>
         <div class="d-flex">
-            <a href="#" class="btn btn-outline-light btn-sm">로그인</a>
+            <a th:href="@{/orders/list}" href="#" class="btn btn-outline-light btn-sm">주문내역</a>
+            <a th:href="@{/carts/list}" href="#" class="btn btn-outline-light btn-sm">카트</a>
+            <a th:href="@{/login}" href="#" class="btn btn-outline-light btn-sm">로그인</a>
         </div>
     </div>
 </nav>

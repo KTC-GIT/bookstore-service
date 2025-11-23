@@ -16,11 +16,31 @@
         .badge-stock { font-size: 0.9rem; }
     </style>
 </head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    function addToCart(bookId) {
-        const count = document.getElementById('quantity').value;
-        alert(`책 ID: ${bookId}, 수량: ${count}개\n장바구니 담기 기능은 내일 구현 예정!`);
-    }
+function addToCart(bookId) {
+    let count = $("#quantity").val();
+    // const count = document.getElementById('quantity').value;
+    $.ajax({
+       url : "/carts/items",
+       type : "POST",
+        contentType : "application/json; charset=utf-8",
+        data: JSON.stringify({
+            "bookId": Number(bookId),
+            "quantity": Number(count)
+        }),
+        success : function(data){
+           alert(data);
+        },
+        error : function(xhr, status, error){
+            alert(xhr.responseText);
+        },
+        complete : function(){
+
+        }
+    });
+    // alert(`책 ID: ${bookId}, 수량: ${count}개\n장바구니 담기 기능은 내일 구현 예정!`);
+}
 </script>
 <body class="bg-light">
 

@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -40,6 +43,9 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false)
     private String shippingAddress;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
+
     @Builder
     public Order(User user, String orderNumber, OrderStatus orderStatus, Long totalAmount, String shippingAddress) {
         this.user = user;
@@ -47,6 +53,11 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = orderStatus;
         this.totalAmount = totalAmount;
         this.shippingAddress = shippingAddress;
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this);
     }
 
 
