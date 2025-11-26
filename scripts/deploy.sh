@@ -5,6 +5,9 @@ cd /home/ubuntu/bookstore-deploy
 echo "Pulling latest image..."
 sudo docker compose pull
 
+echo  "down containers....."
+sudo docker compose down
+
 echo "Starting containers...."
 sudo docker compose up -d
 
