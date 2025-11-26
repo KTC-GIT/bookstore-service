@@ -8,6 +8,18 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      AWS_REGION: ap-northeast-2
+      S3_BUCKET_NAME: iron-forge-bucket
+      CODE_DEPLOY_APP_NAME: iron-forge-bookstore
+      CODE_DEPLOY_GROUP_NAME: iron-forge-clan
+
+
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,6 +29,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+
+      # 3. [핵심] Gradle 설정 (캐시 포함)
+      # gradlew 스크립트 대신 이 액션이 Gradle을 설정해 줌
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build with Gradle
         run: gradle clean build -x test
@@ -34,21 +51,25 @@ jobs:
           push: true
           tags: |
             crazybeerdwarf/bookstore:latest
-            crazybeerdwarf/bookstore:${{ github.sha }}
-            
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: SSH to EC2 and deploy
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/bookstore-deploy
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN}}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Make zip file
+        run: zip -r ./bookstore-deploy.zip appspec.yml scripts
+
+      - name: Upload to S3
+        run: aws s3 cp ./bookstore-deploy.zip s3://${{env.S3_BUCKET_NAME}}/bookstore-deploy.zip
+
+      - name: Code Deploy
+        run: >
+          aws deploy create-deployment
+          --application-name ${{ env.CODE_DEPLOY_APP_NAME }}
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name ${{ env.CODE_DEPLOY_GROUP_NAME }}
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=bookstore-deploy.zip
+
+
