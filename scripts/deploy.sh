@@ -44,12 +44,28 @@ sleep 20
 
 # 5. Nginx 설정 변경 (핵심!)
 # 이전 설정이 app-blue든 app-green이든 상관없이, 무조건 현재 Target으로 덮어씀
-NGINX_CONF="./nginx/conf.d/default.conf"
-echo ">>> Updating Nginx upstream to $TARGET_SERVICE"
+#NGINX_CONF="./nginx/conf.d/default.conf"
+#echo ">>> Updating Nginx upstream to $TARGET_SERVICE"
 
 # [설명] server app-.*:8080; 패턴을 찾아서 server $TARGET_SERVICE:8080;으로 변경
 # 이렇게 하면 초기 상태가 뭐든 상관없이 무조건 타겟으로 고정됨
-sed -i "s/server app-.*:8080;/server $TARGET_SERVICE:8080;/g" $NGINX_CONF
+#sed -i "s/server app-.*:8080;/server $TARGET_SERVICE:8080;/g" $NGINX_CONF
+
+# nginx는 기본적으로 conf.d/*.conf로 되어 있는 파일을 모두 읽어들임
+# 따라서 templates로 blue,green.conf 파일 격리가 필요함.
+# templates 폴더에서 가져와서 conf.d/default.conf로 덮어씌움.
+TEMPLATE_PATH="./nginx/templates"
+TARGET_PATH="./nginx/conf.d/default.conf"
+
+echo ">>> Updating Nginx config (Copying file) ... "
+
+if [ "$TARGET_SERVICE" == "app-blue" ]; then
+  # Blue 설정 파일을 default.conf로 강제 복사(-f)
+  cp -f "$TEMPLATE_PATH/blue.conf" "$TARGET_PATH"
+else
+  # Green 설정 파일을 default.conf로 강제 복사 (-f)
+  cp -f "$TEMPLATE_PATH/green.conf" "$TARGET_PATH"
+fi
 
 # 6. Nginx가 켜져 있는지 확인 후 Reload 또는 Start
 IS_NGINX=$(docker ps -q -f name=bookstore-nginx)
