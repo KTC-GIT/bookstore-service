@@ -39,8 +39,36 @@ echo ">> 컨테이너 실행: $TARGET_SERVICE"
 docker compose up -d $TARGET_SERVICE
 
 # 4. Health Check (단순 대기) / actuator가 붙어있으면 거기로 때린다
-echo ">> Waiting for Health Check (20s)"
-sleep 20
+#echo ">> Waiting for Health Check (20s)"
+#sleep 20
+
+# 4. 서비스가 뜨는지 확실하게 확인
+echo ">>> 🐢 $TARGET_SERVICE 가 완전히 뜰 때까지 Health Check 시작..."
+
+# 4-1. 반복문으로 최대 10번 확인 (10초 간격 = 총 100초 대기)
+# t3.medium 성능 고려해서 넉넉히 잡음
+for RETRY_COUNT in {1..10}
+do
+  echo ">> 시도 ($RETRY_COUNT/10)..."
+
+  # 4-2. curl로 실제로 200 OK가 오는지 찔러봄 (Nginx 컨테이너 안에서 찌르는 게 가장 확실함)
+  # 아직 안 떴으면 에러가 나거나 000이 뜸
+  RESPONSE=$(docker exec bookstore-nginx curl -s -o /dev/null -w "%{http_code}" http://$TARGET_SERVICE:8080)
+
+  if [ "$RESPONSE" = "200" ]; then
+    ehco ">>> $TARGET_SERVICE 구동 완료! (Status: 200)"
+    break
+  else
+    echo ">>> 아직 응답 없음 (Status: $RESPONSE). 10초 대기..."
+    sleep 10
+  fi
+done
+
+# 4-3. 10번 다 했는데도 200이 안나오면 배포 실패처리
+if [ "$RESPONSE" != "200"]; then
+  echo ">>> 에러: $TARGET_SERVICE 가 정상적으로 뜨지 않았습니다. 배포를 중단합니다."
+  exit 1
+fi
 
 # 5. Nginx 설정 변경 (핵심!)
 # 이전 설정이 app-blue든 app-green이든 상관없이, 무조건 현재 Target으로 덮어씀
