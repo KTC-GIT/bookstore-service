@@ -6,15 +6,16 @@ import com.practice.bookstore.cart.domain.Cart;
 import com.practice.bookstore.cart.domain.CartItem;
 import com.practice.bookstore.cart.domain.CartItemRepository;
 import com.practice.bookstore.cart.domain.CartRepository;
-import com.practice.bookstore.order.domain.Order;
-import com.practice.bookstore.order.domain.OrderItem;
-import com.practice.bookstore.order.domain.OrderItemRepository;
-import com.practice.bookstore.order.domain.OrderRepository;
+import com.practice.bookstore.order.domain.*;
+import com.practice.bookstore.order.domain.event.OrderMessage;
+import com.practice.bookstore.order.infra.messaging.RabbitMqOrderProducer;
 import com.practice.bookstore.order.presentation.dto.OrderCreateFromCartReq;
 import com.practice.bookstore.order.presentation.dto.OrderResponse;
 import com.practice.bookstore.user.domain.User;
 import com.practice.bookstore.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
@@ -32,6 +34,8 @@ public class OrderService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+
+    private final OrderEventPublisher orderEventPublisher;
 
     @Transactional
     public String createOrderFromCart(Long userId, OrderCreateFromCartReq request){
@@ -91,9 +95,11 @@ public class OrderService {
         // 7. 장바구니 비우기
         cartItemRepository.deleteAll(cartItems);
 
+        // 8. rabbitMQ 비동기 메시지 발송
+        OrderMessage message = new OrderMessage(order.getOrderNumber(),user.getEmail(), order.getTotalAmount());
+        orderEventPublisher.publish(message);
+
         return order.getOrderNumber();
-
-
     }
 
     @Transactional(readOnly = true)
@@ -114,6 +120,8 @@ public class OrderService {
 
         return responses;
     }
+
+
 
 
     private String generateOrderNumber(){

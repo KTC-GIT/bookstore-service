@@ -65,7 +65,7 @@ do
 done
 
 # 4-3. 10번 다 했는데도 200이 안나오면 배포 실패처리
-if [ "$RESPONSE" != "200"]; then
+if [ "$RESPONSE" != "200" ]; then
   echo ">>> 에러: $TARGET_SERVICE 가 정상적으로 뜨지 않았습니다. 배포를 중단합니다."
   exit 1
 fi

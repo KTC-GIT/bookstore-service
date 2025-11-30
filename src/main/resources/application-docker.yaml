@@ -23,10 +23,18 @@ spring:
     init:
       mode: never
 
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: ${RABBITMQ_NAME}
+    password: ${RABBITMQ_PASSWORD}
+
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
+
+
 
 
 
