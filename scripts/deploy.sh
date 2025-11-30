@@ -38,6 +38,15 @@ docker compose pull $TARGET_SERVICE
 echo ">> 컨테이너 실행: $TARGET_SERVICE"
 docker compose up -d $TARGET_SERVICE
 
+# [추가] 헬스체크를 수행하려면 Nginx 컨테이너가 살아있어야 함 (curl 도구 셔틀)
+echo ">>> Checking if Nginx is running"
+IS_NGINX=$(docker ps -q -f name=bookstore-nginx)
+
+if [ -z "$IS_NGINX" ]; then
+  echo ">>> Nginx is not running. Starting Nginx for health check..."
+  docker compose up -d nginx
+fi
+
 # 4. Health Check (단순 대기) / actuator가 붙어있으면 거기로 때린다
 #echo ">> Waiting for Health Check (20s)"
 #sleep 20
