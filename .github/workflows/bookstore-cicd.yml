@@ -59,7 +59,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Make zip file
-        run: zip -r ./bookstore-deploy.zip appspec.yml scripts nginx
+        run: zip -r ./bookstore-deploy.zip appspec.yml scripts nginx certbot
 
       - name: Upload to S3
         run: aws s3 cp ./bookstore-deploy.zip s3://${{env.S3_BUCKET_NAME}}/bookstore-deploy.zip
