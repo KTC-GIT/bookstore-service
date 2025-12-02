@@ -112,7 +112,7 @@ if [ -z "$IS_NGINX" ]; then
   docker compose up -d nginx
 else
   echo ">>> Nginx is running. Reloading..."
-  docker exec bookstore-nginx -s reload
+  docker exec bookstore-nginx nginx -s reload
 fi
 
 # 7. 이전 컨테이너 중지 (켜져 있었을 경우에만)
