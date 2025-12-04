@@ -1,5 +1,6 @@
 package com.practice.bookstore.global.config;
 
+import com.practice.bookstore.global.config.handler.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -19,7 +20,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LoginSuccessHandler loginSuccessHandler) throws Exception{
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/join","/books","/api/**","/","/js/**","/css/**","/images/**").permitAll()
@@ -28,7 +29,8 @@ public class SecurityConfig {
                         .loginPage("/login")    // 만든 로그인 페이지
                         .loginProcessingUrl("/login")   //폼 전송할 URL (시큐리티가 낚아챔)
                         .usernameParameter("email")     //input name="email"
-                        .defaultSuccessUrl("/")     // 성공하면 메인으로..
+                        .successHandler(loginSuccessHandler)
+//                        .defaultSuccessUrl("/")     // 성공하면 메인으로..
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/"));

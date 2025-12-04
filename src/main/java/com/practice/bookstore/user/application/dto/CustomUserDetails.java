@@ -12,7 +12,8 @@ import java.util.Collections;
 
 @Getter
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails{
+
     private final User user;
 
     // 나중에 컨트롤러에서 user.getId() 꺼낼 때 씀

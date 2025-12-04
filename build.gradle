@@ -46,7 +46,10 @@ dependencies {
 
     // RabbitMQ
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    // implementation 'com.fasterxml.jackson.core:jackson-databind' <-- 삭제 (starter-web에 포함됨)
+
+    // [Redis] 스프링 데이터 Redis + 스프링 세션 Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.session:spring-session-data-redis'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
