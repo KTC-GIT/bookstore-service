@@ -29,6 +29,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+          cache: 'gradle'
 
       # 3. [핵심] Gradle 설정 (캐시 포함)
       # gradlew 스크립트 대신 이 액션이 Gradle을 설정해 줌
