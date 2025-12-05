@@ -60,16 +60,16 @@ Spring Boot 기반 전자서점 서비스에
 - GitHub Actions Job:
     1. Gradle 빌드 (`gradle clean build -x test`)
     2. Docker 이미지 빌드 & Docker Hub 푸시
-        - 레포: `crazybeerdwarf/bookstore:latest`
+        - 레포: `[DOCKERHUB_ID]/bookstore:latest`
     3. `appspec.yml + scripts`를 묶어 `bookstore-deploy.zip` 생성
-    4. S3 버킷(`iron-forge-bucket`)에 업로드
+    4. S3 버킷에 업로드
     5. CodeDeploy 배포 생성
-        - 애플리케이션: `iron-forge-bookstore`
-        - 배포 그룹: `iron-forge-clan`
+        - 애플리케이션: 
+        - 배포 그룹: 
 
 ### 5-2. 배포(EC2) 구조
 
-- EC2 인스턴스: `iron-forge`
+- EC2 인스턴스:
 - Docker Compose:
     - `db`: MySQL 8.0, `local-db-data` 볼륨 사용
     - `app_blue`, `app_green`: Spring Boot 컨테이너 (Blue/Green)

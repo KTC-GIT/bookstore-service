@@ -1,0 +1,6 @@
+#.dockerignore
+.git
+.gradle
+build
+out
+*.md
