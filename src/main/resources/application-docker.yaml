@@ -41,7 +41,17 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info   # 프로메테우스, 헬스체크 등 노출
+  endpoint:
+    prometheus:
+      enable: true
+  metrics:
+    tags:
+      application: iron-forge-app
 
 
 

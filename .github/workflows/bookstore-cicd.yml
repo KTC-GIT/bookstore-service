@@ -37,7 +37,7 @@ jobs:
 
       - name: Build with Gradle
         run: gradle clean build -x test
-
+      # docker 캐싱을 사용하기 위해 buildx 선언
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -55,6 +55,7 @@ jobs:
           tags: |
             crazybeerdwarf/bookstore:latest
             crazybeerdwarf/bookstore:${{github.sha}}
+          # 캐싱을 위해 추가
           cache-from: type=gha
           cache-to: type=gha, mode=max
 

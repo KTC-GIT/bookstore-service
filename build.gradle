@@ -51,6 +51,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-data-redis'
 
+    // 액추에이터 본체
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // 프로메테우스 연결 젠더 (데이터를 프로메테우스가 읽을 수 있는 포맷으로 변환)
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'

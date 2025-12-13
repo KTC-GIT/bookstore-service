@@ -21,7 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/join","/books","/api/**","/","/js/**","/css/**","/images/**").permitAll()
+                        .requestMatchers("/join","/books","/api/**","/","/js/**","/css/**","/images/**","/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginPage("/login")    // 만든 로그인 페이지

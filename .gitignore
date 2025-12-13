@@ -46,3 +46,20 @@ application.yaml
 application.properties
 
 docker-compose.yml
+
+# 테라폼 바이너리/플러그인
+.terraform/
+
+# [핵심] 상태 파일 (절대 커밋금지)
+*.tfstate
+*.tfstate.backup
+
+# 변수 파일
+*.tfvars
+*.auto.tfvars
+
+# 크래시 로그 (에러 찌꺼기)
+crash.log
+override.tf
+override.tf.json
+.terraformrc
