@@ -14,7 +14,7 @@ resource "aws_security_group" "iron-forge-sg" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["112.165.130.27/32"]
+    cidr_blocks = [var.my_local_ip]
     description = "SSH"
   }
 
@@ -23,7 +23,7 @@ resource "aws_security_group" "iron-forge-sg" {
     from_port = 3306
     to_port = 3306
     protocol = "tcp"
-    cidr_blocks = ["112.165.130.27/32"]
+    cidr_blocks = [var.my_local_ip]
     description = "mysql"
   }
 
@@ -99,7 +99,7 @@ resource "aws_security_group" "monitoring-sg"{
     from_port = 3000
     to_port = 3000
     protocol = "tcp"
-    cidr_blocks = ["112.165.130.27/32"]
+    cidr_blocks = [var.my_local_ip]
     description = "grafana"
   }
 
@@ -108,7 +108,7 @@ resource "aws_security_group" "monitoring-sg"{
     from_port = 9090
     to_port = 9090
     protocol = "tcp"
-    cidr_blocks = ["112.165.130.27/32"]
+    cidr_blocks = [var.my_local_ip]
     description = "prometheus"
   }
 
@@ -117,8 +117,17 @@ resource "aws_security_group" "monitoring-sg"{
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["112.165.130.27/32"]
+    cidr_blocks = [var.my_local_ip]
     description = "SSH"
+  }
+
+  # alertmanager
+  ingress {
+    from_port = 9093
+    to_port = 9093
+    protocol = "tcp"
+    cidr_blocks = [var.my_local_ip]
+    description = "alertmanager"
   }
 
 

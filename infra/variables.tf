@@ -39,3 +39,8 @@ variable "db_password" {
   type = string
   sensitive = true
 }
+
+variable "my_local_ip" {
+  description = "나의 로컬 IP"
+  type = string
+}

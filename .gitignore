@@ -63,3 +63,5 @@ crash.log
 override.tf
 override.tf.json
 .terraformrc
+
+k6/
