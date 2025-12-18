@@ -19,7 +19,7 @@ public class GlobalApiController {
         return "OK";
     }
 
-    @GetMapping("/api/test/memory-leak")
+    @GetMapping("/test/memory-leak")
     public String createMemoryLeak(){
         // 호출할 때마다 1MB 정도의 쓰레기 데이터를 힙 메모리에 쑤셔넣음
         for(int i=0; i<5000; i++){

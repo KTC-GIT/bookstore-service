@@ -45,14 +45,6 @@ resource "aws_security_group" "iron-forge-sg" {
     description = "https"
   }
 
-  ingress{
-    from_port = 9100
-    to_port = 9100
-    protocol = "tcp"
-    cidr_blocks = []
-    security_groups = [aws_security_group.monitoring-sg.id]
-    description = "Node Exporter"
-  }
 
   egress {
     from_port = 0
@@ -130,11 +122,40 @@ resource "aws_security_group" "monitoring-sg"{
     description = "alertmanager"
   }
 
-
   egress {
     from_port = 0
     to_port = 0
     protocol = "-1"   # 모든 프로토콜
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_security_group_rule" "loki_ingress" {
+  type = "ingress"
+  from_port = 3100
+  to_port = 3100
+  protocol = "tcp"
+
+  # 규칙을 붙일 주체 (모니터링 서버 SG)
+  security_group_id = aws_security_group.monitoring-sg.id
+
+  # 허용해줄 대상 (앱 서버 SG)
+  source_security_group_id = aws_security_group.iron-forge-sg.id
+
+  description = "Allow loki logs from App Server"
+}
+
+resource "aws_security_group_rule" "node-exporter_ingress" {
+  type              = "ingress"
+  from_port         = 9100
+  to_port           = 9100
+  protocol          = "tcp"
+
+  # 규칙을 붙일 주체 (앱서버)
+  security_group_id = aws_security_group.iron-forge-sg.id
+
+  # 접근을 허용할 대상 (모니터링서버 SG - prometheus가 긁어가기 때문)
+  source_security_group_id = aws_security_group.monitoring-sg.id
+
+  description = "Node Exporter For Prometheus"
 }
